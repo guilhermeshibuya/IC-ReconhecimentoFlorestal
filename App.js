@@ -22,11 +22,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Camera 
-        style={styles.camera} 
-        type={type} 
-        useCamera2Api={true}
-      >
+      <Camera style={styles.camera} type={type} useCamera2Api={true}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
             <Text>Flip Camera</Text>
