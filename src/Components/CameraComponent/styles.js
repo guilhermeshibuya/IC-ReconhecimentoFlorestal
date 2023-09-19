@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
   camera: {
     width: WINDOW_WIDTH,
     height: WINDOW_WIDTH * (4 / 3),
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingBottom: 24,
   },
   header: {
     flex: 1,
@@ -17,10 +20,11 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#000",
+    paddingHorizontal: 32,
   },
   button: {
     backgroundColor: "#fff",
@@ -30,6 +34,18 @@ const styles = StyleSheet.create({
     borderColor: "#dedede",
     borderWidth: 8,
     marginBottom: 24,
+  },
+  zoomButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 32,
+    height: 32,
+    borderRadius: 100,
+    backgroundColor: "#fff",
+  },
+  slider: {
+    width: WINDOW_WIDTH * 0.8,
+    height: 40,
   },
 });
 
