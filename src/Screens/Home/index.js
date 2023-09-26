@@ -1,4 +1,4 @@
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import styles from "./styles";
@@ -19,34 +19,67 @@ export default function HomeScreen({ navigation }) {
 
   const launchCameraAsync = async () => {
     if (!cameraPermissions?.granted)
-      alert("Não foi possível abrir a câmera. Permissão negada!");
+      Alert.alert(
+        "Permissão negada",
+        "É necessário fornecer as permissões para acessar a câmera.",
+        [
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+          {
+            text: "Ok",
+            onPress: () => requestCameraPermissions(),
+          },
+        ]
+      );
 
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
+    if (cameraPermissions?.granted) {
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      await MediaLibrary.createAssetAsync(result.assets[0].uri);
-    } else {
-      alert("Nenhuma imagem selecionada");
+      if (!result.canceled) {
+        await MediaLibrary.createAssetAsync(result.assets[0].uri)
+          .then(alert("Imagem salva no dispositivo"))
+          .catch((err) => alert("Erro ao salvar a imagem no dispostivo"));
+      } else {
+        alert("Nenhuma imagem selecionada");
+      }
     }
   };
 
   const launchMediaAsync = async () => {
     if (!mediaPermissions?.granted)
-      alert("Não foi possível abrir a galeria. Permissão negada!");
+      Alert.alert(
+        "Permissão negada",
+        "É necessário fornecer as permissões para acessar a galeria.",
+        [
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+          {
+            text: "Ok",
+            onPress: () => requestMediaPermissions(),
+          },
+        ]
+      );
+    if (mediaPermissions?.granted) {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsMultipleSelection: false,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: false,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      await MediaLibrary.createAssetAsync(result.assets[0].uri);
-    } else {
-      alert("Nenhuma imagem selecionada");
+      if (!result.canceled) {
+        await MediaLibrary.createAssetAsync(result.assets[0].uri)
+          .then(alert("Imagem salva no dispositivo"))
+          .catch((err) => alert("Erro ao salvar a imagem no dispostivo"));
+      } else {
+        alert("Nenhuma imagem selecionada");
+      }
     }
   };
 
@@ -58,7 +91,7 @@ export default function HomeScreen({ navigation }) {
         onPress={() => launchCameraAsync()}
       />
       <Button
-        title="tirar foto"
+        title="escolher foto"
         iconName="image-outline"
         onPress={() => launchMediaAsync()}
       />
