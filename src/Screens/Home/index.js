@@ -2,7 +2,7 @@ import { Pressable, View, Text, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import styles from "./styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../Components/Button";
 
 export default function HomeScreen({ navigation }) {
@@ -16,6 +16,28 @@ export default function HomeScreen({ navigation }) {
     if (!cameraPermissions?.granted) requestCameraPermissions();
     if (!mediaPermissions?.granted) requestMediaPermissions();
   }, []);
+
+  const createAlbumAddAsset = async (uri) => {
+    const cachedAsset = await MediaLibrary.createAssetAsync(uri);
+    const albumName = "Reconhecimento Florestal";
+    const album = await MediaLibrary.getAlbumAsync(albumName);
+
+    if (album === null) {
+      await MediaLibrary.createAlbumAsync(albumName, cachedAsset, false)
+        .then(() => alert("Imagem salva no dispositivo"))
+        .catch((err) => {
+          alert("Erro ao salvar a imagem no dispostivo");
+          console.log(err);
+        });
+    } else {
+      await MediaLibrary.addAssetsToAlbumAsync([cachedAsset], album, false)
+        .then(() => alert("Imagem salva no dispositivo"))
+        .catch((err) => {
+          alert("Erro ao salvar a imagem no dispostivo");
+          console.log(err);
+        });
+    }
+  };
 
   const launchCameraAsync = async () => {
     if (!cameraPermissions?.granted)
@@ -41,9 +63,7 @@ export default function HomeScreen({ navigation }) {
       });
 
       if (!result.canceled) {
-        await MediaLibrary.createAssetAsync(result.assets[0].uri)
-          .then(alert("Imagem salva no dispositivo"))
-          .catch((err) => alert("Erro ao salvar a imagem no dispostivo"));
+        createAlbumAddAsset(result.assets[0].uri);
       } else {
         alert("Nenhuma imagem selecionada");
       }
@@ -74,9 +94,7 @@ export default function HomeScreen({ navigation }) {
       });
 
       if (!result.canceled) {
-        await MediaLibrary.createAssetAsync(result.assets[0].uri)
-          .then(alert("Imagem salva no dispositivo"))
-          .catch((err) => alert("Erro ao salvar a imagem no dispostivo"));
+        createAlbumAddAsset(result.assets[0].uri);
       } else {
         alert("Nenhuma imagem selecionada");
       }
